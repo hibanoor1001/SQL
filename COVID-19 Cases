@@ -1,0 +1,49 @@
+# COVID-19 Cases Project --
+
+# For this project, I downloaded the Covid-19 Dataset data from Kaggle - https://www.kaggle.com/datasets/imdevskp/corona-virus-report
+# Then I created a table to insert the data.
+# Finally, I performed analytics on the data using SQL. 
+
+
+# Creating the table
+CREATE TABLE covid_cases (
+    id SERIAL PRIMARY KEY,
+    country VARCHAR(100),
+    date DATE,
+    confirmed_cases INTEGER,
+    deaths INTEGER,
+    recovered INTEGER
+);
+
+
+# Inserting data from the CSV file into the table
+LOAD DATA INFILE '/path/to/country_wise_latest.csv'
+INTO TABLE covid_cases
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+
+# Exploring the data using SQL
+# 1. Get total cases per country
+SELECT country, SUM(confirmed_cases) AS total_cases
+FROM covid_cases
+GROUP BY country
+ORDER BY total_cases DESC;
+
+# 2. Get the top 10 countries with the highest death rate
+SELECT country, SUM(deaths) AS total_deaths
+FROM covid_cases
+GROUP BY country
+ORDER BY total_deaths DESC
+LIMIT 10;
+
+# 3. Find the daily increase in confirmed cases
+SELECT country, date, confirmed_cases - LAG(confirmed_cases) OVER (PARTITION BY country ORDER BY date) AS daily_increase
+FROM covid_cases;
+
+# 4. Determine the recovery rate per country
+SELECT country, (SUM(recovered) / SUM(confirmed_cases)) * 100.0 AS recovery_rate
+FROM covid_cases
+GROUP BY country
+ORDER BY recovery_rate DESC;
