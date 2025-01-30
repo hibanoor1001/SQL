@@ -1,0 +1,53 @@
+# IMDb Movies Project --
+
+# For this project, I downloaded IMDb Movies Dataset data from their official website - https://developer.imdb.com/non-commercial-datasets/
+# Then I created a table to insert the data.
+# Finally, I performed analytics on the data using SQL. 
+
+
+# Creating the table
+CREATE TABLE imdb_movies (
+    movie_id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    genre VARCHAR(100),
+    release_year INTEGER,
+    rating DECIMAL(3,1),
+    votes INTEGER,
+    revenue_millions DECIMAL(6,2),
+    metascore INTEGER
+);
+
+
+# Inserting data from the CSV file into the table
+LOAD DATA INFILE '/path/to/title_basics.csv'
+INTO TABLE imdb_movies
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+
+# Exploring the data using SQL
+# 1. Find the highest-rated movies
+SELECT title, rating 
+FROM imdb_movies 
+ORDER BY rating DESC 
+LIMIT 10;
+
+# 2. Find the most popular genres by average rating
+SELECT genre, AVG(rating) AS avg_rating
+FROM imdb_movies
+GROUP BY genre
+ORDER BY avg_rating DESC;
+
+# 3. Find the movies with the highest revenue
+SELECT title, revenue_millions 
+FROM imdb_movies 
+ORDER BY revenue_millions DESC 
+LIMIT 10;
+
+# 4. Get the number of movies released per year
+SELECT release_year, COUNT(*) AS movie_count
+FROM imdb_movies
+GROUP BY release_year
+ORDER BY release_year DESC;
+
