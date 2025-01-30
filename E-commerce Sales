@@ -1,0 +1,52 @@
+# E-commerce Sales Project --
+
+# For this project, I downloaded the E-commerce Sales Dataset from Kaggle - https://www.kaggle.com/datasets/carrie1/ecommerce-data
+# Then I created a table to insert the data.
+# Finally, I performed analytics on the data using SQL. 
+
+
+# Creating the table
+CREATE TABLE ecommerce_sales (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INTEGER,
+    product_category VARCHAR(100),
+    order_date DATE,
+    quantity INTEGER,
+    price DECIMAL(10,2),
+    total_amount DECIMAL(10,2)
+);
+
+
+# Inserting data from the CSV file into the table
+LOAD DATA INFILE '/path/to/sales_data.csv'
+INTO TABLE ecommerce_sales
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+
+# Exploring the data using SQL
+# 1. Find the top-selling products by revenue
+SELECT product_category, SUM(total_amount) AS total_revenue
+FROM ecommerce_sales
+GROUP BY product_category
+ORDER BY total_revenue DESC;
+
+# 2. Get the customers who spent the most
+SELECT customer_id, SUM(total_amount) AS total_spent
+FROM ecommerce_sales
+GROUP BY customer_id
+ORDER BY total_spent DESC
+LIMIT 10;
+
+# 3. Determine the most popular product categories by quantity sold
+SELECT product_category, SUM(quantity) AS total_quantity
+FROM ecommerce_sales
+GROUP BY product_category
+ORDER BY total_quantity DESC;
+
+# 4. Analyze monthly sales trends
+SELECT DATE_TRUNC('month', order_date) AS month, SUM(total_amount) AS total_sales
+FROM ecommerce_sales
+GROUP BY month
+ORDER BY month ASC;
