@@ -1,0 +1,52 @@
+# Airbnb Listings Analysis --
+
+# For this project, I downloaded the AirBnb Dataset from Kaggle - https://www.kaggle.com/datasets/airbnb/boston
+# Then I created a table to insert the data.
+# Finally, I performed analytics on the data using SQL. 
+
+
+# Creating the tables
+CREATE TABLE airbnb_listings (
+    listing_id INT PRIMARY KEY,
+    host_id INT NOT NULL,
+    host_name VARCHAR(255) NOT NULL,
+    neighborhood VARCHAR(100) NOT NULL,
+    room_type VARCHAR(50) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    minimum_nights INT NOT NULL,
+    number_of_reviews INT NOT NULL
+);
+
+
+# Inserting data from the CSV file into the table
+LOAD DATA INFILE '/path/to/listings.csv'
+INTO TABLE airbnb_listings
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+
+# Exploring the data using SQL
+1. Get average price per neighborhood
+SELECT neighborhood, AVG(price) AS avg_price
+FROM airbnb_listings
+GROUP BY neighborhood
+ORDER BY avg_price DESC;
+
+2. Find hosts with the most listings
+SELECT host_name, COUNT(listing_id) AS total_listings
+FROM airbnb_listings
+GROUP BY host_name
+ORDER BY total_listings DESC;
+
+3. Identify the most reviewed listings
+SELECT listing_id, host_name, number_of_reviews
+FROM airbnb_listings
+ORDER BY number_of_reviews DESC
+LIMIT 10;
+
+4. Find most common room types
+SELECT room_type, COUNT(*) AS count
+FROM airbnb_listings
+GROUP BY room_type
+ORDER BY count DESC;
