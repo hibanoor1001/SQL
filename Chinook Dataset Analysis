@@ -1,0 +1,144 @@
+# Chinook Dataset Analysis --
+
+# For this project, I downloaded the Chinook Dataset from Kaggle - https://www.kaggle.com/datasets/ranasabrii/chinook
+# Then I created tables to insert the data.
+# Finally, I performed analytics on the data using SQL. 
+
+
+# Creating the tables
+# 1. Creating the Albums table
+CREATE TABLE albums (
+    album_id SERIAL PRIMARY KEY,
+    title VARCHAR(255),
+    artist_id INT
+);
+
+# 2. Creating the Artists table
+CREATE TABLE artists (
+    artist_id SERIAL PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+# 3. Creating the Customers table
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(100),
+    country VARCHAR(100)
+);
+
+# 4. Creating the Invoices table
+CREATE TABLE invoices (
+    invoice_id SERIAL PRIMARY KEY,
+    customer_id INT,
+    invoice_date DATE,
+    billing_address VARCHAR(255),
+    billing_city VARCHAR(100),
+    billing_country VARCHAR(100),
+    total DECIMAL(10, 2)
+);
+
+# 5. Creating the Invoice_Items table
+CREATE TABLE invoice_items (
+    invoice_item_id SERIAL PRIMARY KEY,
+    invoice_id INT,
+    track_id INT,
+    unit_price DECIMAL(10, 2),
+    quantity INT
+);
+
+# 6. Creating the Tracks table
+CREATE TABLE tracks (
+    track_id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    album_id INT,
+    media_type_id INT,
+    genre_id INT,
+    composer VARCHAR(255),
+    milliseconds INT,
+    bytes INT,
+    unit_price DECIMAL(10, 2)
+);
+
+
+# Inserting data from the CSV files into the tables
+LOAD DATA INFILE '/path/to/albums.csv'
+INTO TABLE albums
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+LOAD DATA INFILE '/path/to/artists.csv'
+INTO TABLE artists
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+LOAD DATA INFILE '/path/to/customers.csv'
+INTO TABLE customers
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+LOAD DATA INFILE '/path/to/invoices.csv'
+INTO TABLE invoices
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+LOAD DATA INFILE '/path/to/invoice_items.csv'
+INTO TABLE invoice_items
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+LOAD DATA INFILE '/path/to/tracks.csv'
+INTO TABLE tracks
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+
+# Exploring the data using SQL
+# 1. Get the Total Sales per Country
+SELECT customers.country, SUM(invoices.total) AS total_sales
+FROM customers
+JOIN invoices ON customers.customer_id = invoices.customer_id
+GROUP BY customers.country
+ORDER BY total_sales DESC;
+
+# 2. Get the Top 10 Most Sold Tracks
+SELECT tracks.name, SUM(invoice_items.quantity) AS total_sold
+FROM tracks
+JOIN invoice_items ON tracks.track_id = invoice_items.track_id
+JOIN invoices ON invoice_items.invoice_id = invoices.invoice_id
+GROUP BY tracks.name
+ORDER BY total_sold DESC
+LIMIT 10;
+
+# 3. Get the Revenue per Artist
+SELECT artists.name AS artist_name, SUM(invoice_items.quantity * invoice_items.unit_price) AS total_revenue
+FROM artists
+JOIN albums ON artists.artist_id = albums.artist_id
+JOIN tracks ON albums.album_id = tracks.album_id
+JOIN invoice_items ON tracks.track_id = invoice_items.track_id
+JOIN invoices ON invoice_items.invoice_id = invoices.invoice_id
+GROUP BY artists.name
+ORDER BY total_revenue DESC;
+
+# 4. Get the Customer Purchase History
+SELECT customers.first_name, customers.last_name, invoices.invoice_date, SUM(invoice_items.quantity * invoice_items.unit_price) AS total_spent
+FROM customers
+JOIN invoices ON customers.customer_id = invoices.customer_id
+JOIN invoice_items ON invoices.invoice_id = invoice_items.invoice_id
+GROUP BY customers.first_name, customers.last_name, invoices.invoice_date
+ORDER BY invoices.invoice_date DESC;
+
+# 5. Get the Number of Tracks per Genre
+SELECT genres.name AS genre_name, COUNT(tracks.track_id) AS number_of_tracks
+FROM genres
+JOIN tracks ON genres.genre_id = tracks.genre_id
+GROUP BY genres.name
+ORDER BY number_of_tracks DESC;
+
