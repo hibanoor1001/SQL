@@ -46,4 +46,6 @@ FROM covid_cases;
 SELECT country, (SUM(recovered) / SUM(confirmed_cases)) * 100.0 AS recovery_rate
 FROM covid_cases
 GROUP BY country
+
+
 ORDER BY recovery_rate DESC;
