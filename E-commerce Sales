@@ -1,4 +1,4 @@
-# E-commerce Sales Project --
+# E-commerce Sales --
 
 # For this project, I downloaded the E-commerce Sales Dataset from Kaggle - https://www.kaggle.com/datasets/carrie1/ecommerce-data
 # Then I created a table to insert the data.
@@ -18,7 +18,7 @@ CREATE TABLE ecommerce_sales (
 
 
 # Inserting data from the CSV file into the table
-LOAD DATA INFILE '/path/to/sales_data.csv'
+LOAD DATA INFILE '/path/to/data.csv'
 INTO TABLE ecommerce_sales
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
@@ -50,3 +50,4 @@ SELECT DATE_TRUNC('month', order_date) AS month, SUM(total_amount) AS total_sale
 FROM ecommerce_sales
 GROUP BY month
 ORDER BY month ASC;
+
