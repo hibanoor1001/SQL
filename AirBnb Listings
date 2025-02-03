@@ -27,25 +27,25 @@ IGNORE 1 ROWS;
 
 
 # Exploring the data using SQL
-1. Get average price per neighborhood
+# 1. Get average price per neighborhood
 SELECT neighborhood, AVG(price) AS avg_price
 FROM airbnb_listings
 GROUP BY neighborhood
 ORDER BY avg_price DESC;
 
-2. Find hosts with the most listings
+# 2. Find hosts with the most listings
 SELECT host_name, COUNT(listing_id) AS total_listings
 FROM airbnb_listings
 GROUP BY host_name
 ORDER BY total_listings DESC;
 
-3. Identify the most reviewed listings
+# 3. Identify the most reviewed listings
 SELECT listing_id, host_name, number_of_reviews
 FROM airbnb_listings
 ORDER BY number_of_reviews DESC
 LIMIT 10;
 
-4. Find most common room types
+# 4. Find most common room types
 SELECT room_type, COUNT(*) AS count
 FROM airbnb_listings
 GROUP BY room_type
