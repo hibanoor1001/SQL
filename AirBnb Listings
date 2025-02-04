@@ -1,6 +1,6 @@
 # Airbnb Listings Analysis --
 
-# For this project, I downloaded the AirBnb Dataset from Kaggle - https://www.kaggle.com/datasets/airbnb/boston
+# For this project, I downloaded the AirBnb Dataset from Kaggle
 # Then I created a table to insert the data.
 # Finally, I performed analytics on the data using SQL. 
 
@@ -50,3 +50,4 @@ SELECT room_type, COUNT(*) AS count
 FROM airbnb_listings
 GROUP BY room_type
 ORDER BY count DESC;
+
