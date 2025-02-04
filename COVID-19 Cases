@@ -1,6 +1,6 @@
 # COVID-19 Cases --
 
-# For this project, I downloaded the Covid-19 Dataset from Kaggle - https://www.kaggle.com/datasets/imdevskp/corona-virus-report
+# For this project, I downloaded the Covid-19 Dataset from Kaggle
 # Then I created a table to insert the data.
 # Finally, I performed analytics on the data using SQL. 
 
@@ -46,6 +46,5 @@ FROM covid_cases;
 SELECT country, (SUM(recovered) / SUM(confirmed_cases)) * 100.0 AS recovery_rate
 FROM covid_cases
 GROUP BY country
-
-
 ORDER BY recovery_rate DESC;
+
